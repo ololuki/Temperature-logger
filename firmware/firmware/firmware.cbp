@@ -13,7 +13,6 @@
 				<Option type="5" />
 				<Option compiler="avr-gcc" />
 				<Compiler>
-					<Add option="-g" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -33,11 +32,20 @@
 		<Compiler>
 			<Add option="-mmcu=atmega32" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="-ffunction-sections" />
+			<Add option="-fdata-sections" />
+			<Add option="-funsigned-char" />
+			<Add option="-funsigned-bitfields" />
+			<Add option="-fpack-struct" />
+			<Add option="-fshort-enums" />
+			<Add option="-g3" />
 			<Add option="-DF_CPU=8000000UL" />
 		</Compiler>
 		<Linker>
 			<Add option="-mmcu=atmega32" />
 			<Add option="-Wl,-Map=$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).map,--cref" />
+			<Add option="-Wl,--gc-sections" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="avr-size --mcu=atmega32 --format=avr $(TARGET_OUTPUT_FILE)" />
