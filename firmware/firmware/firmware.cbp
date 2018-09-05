@@ -55,6 +55,8 @@
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="main.cpp" />
+		<Unit filename="serialInterfaces/Usart.cpp" />
+		<Unit filename="serialInterfaces/Usart.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

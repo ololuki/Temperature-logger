@@ -20,18 +20,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#ifndef USART_H
+#define USART_H
 
-#include <avr/io.h>
-#include "serialInterfaces/Usart.h"
+#include <stdint.h>
 
 
-int main(void)
+class Usart
 {
-	Usart::init();
-	Usart::sendStr("Hello\r\n");
+public:
+	static void init();
+	static void putchar(char c);
+	static void putcharBlocking(char c);
+	static void sendStr(const char* str);
+	static void sendData(uint8_t* data, uint16_t size);
+private:
+	static inline void enableTransmitter();
+	static inline void setTxPinAsOutput();
+	static inline void writeUBRR();
+	static inline bool isDataRegisterEmpty();
+};
 
-	while(1)
-	;
-
-	return 0;
-}
+#endif // USART_H
