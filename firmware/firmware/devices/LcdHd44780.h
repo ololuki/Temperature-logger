@@ -21,25 +21,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include <avr/io.h>
-#include "serialInterfaces/Usart.h"
-#include "devices/LcdHd44780.h"
+#ifndef LCDHD44780_H
+#define LCDHD44780_H
+
+#include <stdint.h>
 
 
-int main(void)
+class LcdHd44780
 {
-	Usart::init();
-	Usart::sendStr("Hello\r\n");
-	
-	LcdHd44780 lcd;
-	lcd.powerOnWait();
-	lcd.init();
-	lcd.print("Hello");
-	lcd.cursor(1,0);
-	lcd.print("Hello");
+public:
+	static void powerOnWait();
+	static void init();
+	static void cursor(uint8_t line, uint8_t pos);
+	static void print(const char* str);
+private:
+	static void outNibble(uint8_t nibble);
+	static void writeNibble(uint8_t nibble);
+	static void writeByte(uint8_t byte);
+	static void writeCommand(uint8_t cmd);
+	static void writeData(uint8_t data);
+};
 
-	while(1)
-	;
-
-	return 0;
-}
+#endif // LCDHD44780_H
