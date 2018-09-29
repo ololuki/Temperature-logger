@@ -41,6 +41,7 @@
 			<Add option="-fshort-enums" />
 			<Add option="-g3" />
 			<Add option="-DF_CPU=8000000UL" />
+			<Add directory="$(PROJECT_DIR)/" />
 		</Compiler>
 		<Linker>
 			<Add option="-mmcu=atmega32" />
