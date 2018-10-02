@@ -58,7 +58,7 @@
 		<Unit filename="devices/LcdHd44780.cpp" />
 		<Unit filename="devices/LcdHd44780.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="serialInterfaces/Usart.cpp" />
+		<Unit filename="serialInterfaces/Usart.c" />
 		<Unit filename="serialInterfaces/Usart.h" />
 		<Extensions>
 			<code_completion />

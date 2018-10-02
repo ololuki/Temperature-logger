@@ -26,19 +26,18 @@ THE SOFTWARE.
 #include <stdint.h>
 
 
-class Usart
-{
-public:
-	static void init();
-	static void putchar(char c);
-	static void putcharBlocking(char c);
-	static void sendStr(const char* str);
-	static void sendData(uint8_t* data, uint16_t size);
-private:
-	static inline void enableTransmitter();
-	static inline void setTxPinAsOutput();
-	static inline void writeUBRR();
-	static inline bool isDataRegisterEmpty();
-};
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+	void usart_init();
+	void usart_putchar(char c);
+	void usart_putcharBlocking(char c);
+	void usart_sendStr(const char* str);
+	void usart_sendData(uint8_t* data, uint16_t size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // USART_H

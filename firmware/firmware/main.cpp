@@ -28,8 +28,8 @@ THE SOFTWARE.
 
 int main(void)
 {
-	Usart::init();
-	Usart::sendStr("Hello\r\n");
+	usart_init();
+	usart_sendStr("Hello\r\n");
 	
 	LcdHd44780 lcd;
 	lcd.powerOnWait();

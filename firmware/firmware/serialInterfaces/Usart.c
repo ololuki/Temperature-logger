@@ -22,7 +22,7 @@ THE SOFTWARE.
 */
 #include "Usart.h"
 #include <avr/io.h>
-
+#include <stdbool.h>
 
 #define USART_BAUD_RATE 9600
 #define CHECK_BAUD_RATE_EXACT_MATCHING 0
@@ -37,62 +37,67 @@ THE SOFTWARE.
 #endif
 
 
-void Usart::init()
+static inline void usart_enableTransmitter();
+static inline void usart_setTxPinAsOutput();
+static inline void usart_writeUBRR();
+static inline bool usart_isDataRegisterEmpty();
+
+void usart_init()
 {
-	enableTransmitter();
-	writeUBRR();
-	setTxPinAsOutput();
+	usart_enableTransmitter();
+	usart_writeUBRR();
+	usart_setTxPinAsOutput();
 }
 
 /// Put one character to Usart. Non blocking function.
-void Usart::putchar(char c)
+void usart_putchar(char c)
 {
 	UDR = c;
 }
 
 /// Put one character to Usart. First wait until data is sent.
-void Usart::putcharBlocking(char c)
+void usart_putcharBlocking(char c)
 {
 	// wait until last char is emited
-	while (!isDataRegisterEmpty());
+	while (!usart_isDataRegisterEmpty());
 	UDR = c;
 }
 
 /// Send c-string. Put chars until '\0'. Function waits until whole data is sent.
-void Usart::sendStr(const char* str)
+void usart_sendStr(const char* str)
 {
 	while (*str)
 	{
-		putcharBlocking(*str++);
+		usart_putcharBlocking(*str++);
 	}
 }
 
 /// Send data. Put size bytes from buffer data. Function waits until whole data is sent.
-void Usart::sendData(uint8_t* data, uint16_t size)
+void usart_sendData(uint8_t* data, uint16_t size)
 {
 	for (uint16_t i = 0; i < size; i++)
 	{
-		putcharBlocking(data[i]);
+		usart_putcharBlocking(data[i]);
 	}
 }
 
-void Usart::enableTransmitter()
+void usart_enableTransmitter()
 {
 	UCSRB |= (1 << TXEN);
 }
 
-void Usart::setTxPinAsOutput()
+void usart_setTxPinAsOutput()
 {
 	DDRD |= (1 << PD1);
 }
 
-void Usart::writeUBRR()
+void usart_writeUBRR()
 {
 	UBRRL = UBRR % 256;
 	UBRRH = UBRR / 256;
 }
 
-bool Usart::isDataRegisterEmpty()
+bool usart_isDataRegisterEmpty()
 {
 	return (UCSRA & (1 << UDRE));
 }
