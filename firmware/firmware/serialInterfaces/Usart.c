@@ -23,6 +23,8 @@ THE SOFTWARE.
 #include "Usart.h"
 #include <avr/io.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #define USART_BAUD_RATE 9600
 #define CHECK_BAUD_RATE_EXACT_MATCHING 0
@@ -41,18 +43,16 @@ static inline void usart_enableTransmitter();
 static inline void usart_setTxPinAsOutput();
 static inline void usart_writeUBRR();
 static inline bool usart_isDataRegisterEmpty();
+static int usart_putchar(char c, FILE* stream);
+
+static FILE usart_stdout = FDEV_SETUP_STREAM(usart_putchar, NULL, _FDEV_SETUP_WRITE);
+
 
 void usart_init()
 {
 	usart_enableTransmitter();
 	usart_writeUBRR();
 	usart_setTxPinAsOutput();
-}
-
-/// Put one character to Usart. Non blocking function.
-void usart_putchar(char c)
-{
-	UDR = c;
 }
 
 /// Put one character to Usart. First wait until data is sent.
@@ -81,6 +81,28 @@ void usart_sendData(uint8_t* data, uint16_t size)
 	}
 }
 
+/// Print format string to usart output. Format string in data memory (RAM).
+/// Use blocking putchar function - function blocks until whole data is sent.
+void usart_printf(const char* fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	vfprintf(&usart_stdout, fmt, ap);
+	va_end(ap);
+}
+
+/// Print format string to usart output. Format string in program memory (FLASH).
+/// Use blocking putchar function - function blocks until whole data is sent.
+void usart_printf_P(const char* fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	vfprintf_P(&usart_stdout, fmt, ap);
+	va_end(ap);
+}
+
 void usart_enableTransmitter()
 {
 	UCSRB |= (1 << TXEN);
@@ -100,4 +122,11 @@ void usart_writeUBRR()
 bool usart_isDataRegisterEmpty()
 {
 	return (UCSRA & (1 << UDRE));
+}
+
+/// standard i/o function implementation to use standard printf
+static int usart_putchar(char c, FILE* stream)
+{
+	usart_putcharBlocking(c);
+	return 0;
 }

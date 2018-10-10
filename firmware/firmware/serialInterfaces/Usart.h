@@ -31,10 +31,14 @@ extern "C" {
 #endif
 
 	void usart_init();
-	void usart_putchar(char c);
+
 	void usart_putcharBlocking(char c);
+
 	void usart_sendStr(const char* str);
 	void usart_sendData(uint8_t* data, uint16_t size);
+
+	void usart_printf(const char* fmt, ...);
+	void usart_printf_P(const char* fmt, ...);
 
 #ifdef __cplusplus
 }

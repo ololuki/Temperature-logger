@@ -22,6 +22,7 @@ THE SOFTWARE.
 */
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include "serialInterfaces/Usart.h"
 #include "devices/LcdHd44780.h"
 
@@ -29,7 +30,8 @@ THE SOFTWARE.
 int main(void)
 {
 	usart_init();
-	usart_sendStr("Hello\r\n");
+	usart_printf("Hello %s\r\n", "test");
+	usart_printf_P(PSTR("second %s from program memory\r\n"), "test");
 	
 	LcdHd44780 lcd;
 	lcd.powerOnWait();
