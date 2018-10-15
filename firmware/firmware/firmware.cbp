@@ -55,9 +55,13 @@
 			<Add after="avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).eep" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="devices/Ds3231.cpp" />
+		<Unit filename="devices/Ds3231.h" />
 		<Unit filename="devices/LcdHd44780.cpp" />
 		<Unit filename="devices/LcdHd44780.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="serialInterfaces/TwoWireInterface.cpp" />
+		<Unit filename="serialInterfaces/TwoWireInterface.h" />
 		<Unit filename="serialInterfaces/Usart.c">
 			<Option compilerVar="CC" />
 		</Unit>
