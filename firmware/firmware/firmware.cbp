@@ -42,6 +42,7 @@
 			<Add option="-g3" />
 			<Add option="-DF_CPU=8000000UL" />
 			<Add directory="$(PROJECT_DIR)/" />
+			<Add directory="fatFs" />
 		</Compiler>
 		<Linker>
 			<Add option="-mmcu=atmega32" />
@@ -59,6 +60,25 @@
 		<Unit filename="devices/Ds3231.h" />
 		<Unit filename="devices/LcdHd44780.cpp" />
 		<Unit filename="devices/LcdHd44780.h" />
+		<Unit filename="fatFs/diskio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fatFs/diskio.h" />
+		<Unit filename="fatFs/ff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fatFs/ff.h" />
+		<Unit filename="fatFs/ffconf.h" />
+		<Unit filename="fatFs/ffsystem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fatFs/ffunicode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fatFs/mmc_avr.h" />
+		<Unit filename="fatFs/mmc_avr_spi.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.cpp" />
 		<Unit filename="serialInterfaces/TwoWireInterface.cpp" />
 		<Unit filename="serialInterfaces/TwoWireInterface.h" />

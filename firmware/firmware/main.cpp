@@ -22,6 +22,7 @@ THE SOFTWARE.
 */
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include "serialInterfaces/Usart.h"
 #include "devices/LcdHd44780.h"
@@ -30,10 +31,25 @@ THE SOFTWARE.
 
 #include <util/delay.h>
 #include <stdio.h>
+#include "fatFs/diskio.h"
+#include "fatFs/ff.h"
+#include <string.h>
 
+//timer:
+#define START_TIMER0_DIV_256()          TCCR0 |= (1 << CS02);
+#define ENABLE_TIMER0_OVF_INTERRUPT()   TIMSK |= (1 << TOIE0);
+
+FIL sd_file;		// File objects
+FATFS sd_fatFs;		// File system object for logical drive
+char filename[] = "ee.txt";
 
 int main(void)
 {
+	START_TIMER0_DIV_256();
+	ENABLE_TIMER0_OVF_INTERRUPT();
+	sei();
+	DDRA |= (1 << PA7); // debug LED for timer
+	
 	usart_init();
 	usart_printf("Hello %s\r\n", "test");
 	usart_printf_P(PSTR("second %s from program memory\r\n"), "test");
@@ -48,8 +64,24 @@ int main(void)
 	lcd.cursor(1,0);
 	lcd.print("Hello");
 
+	char buffer[10];
+	buffer[0] = '\0';
+	memset(buffer, '\0', 10);
+	UINT cnt;
 	while(1)
 	{
+		int errors = f_mount(&sd_fatFs, "", 1);
+		usart_printf("1: %d %d\r\n", errors, disk_status(0));
+		if (!errors)
+			errors = f_open(&sd_file, filename, FA_READ);
+		usart_printf("2: %d %d\r\n", errors, disk_status(0));
+		if (!errors)
+			errors = f_read(&sd_file, buffer, sizeof buffer - 1, &cnt);
+		usart_printf("3: %d %d %s\r\n", errors, disk_status(0), buffer);
+		
+		lcd.cursor(0,0);
+		lcd.print(buffer);
+		
 		uint8_t dateTimeBuf[10];
 		Ds3231::readDateTime(dateTimeBuf, 10);
 		
@@ -73,11 +105,11 @@ int main(void)
 				dateTimeBuf[4] & 0x0F
 				);
 		
-		lcd.cursor(0,0);
-		lcd.print(time);
-
 		lcd.cursor(1,0);
-		lcd.print(date);
+		lcd.print(time);
+//
+//		lcd.cursor(0,0);
+//		lcd.print(date);
 
 		_delay_ms(500);
 
@@ -85,4 +117,9 @@ int main(void)
 	;
 
 	return 0;
+}
+
+ISR(TIMER0_OVF_vect) {
+	disk_timerproc();
+	PORTA ^= (1 << PA7); // for debug
 }
