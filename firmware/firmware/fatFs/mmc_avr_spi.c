@@ -94,6 +94,9 @@ void power_on (void)
 static
 void power_off (void)
 {
+	// de-initialize in case of remove card
+	Stat |= STA_NOINIT;
+
 	/* Disable SPI function */
 	SPCR = 0;
 
