@@ -2,5 +2,6 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="TemperatureLogger">
 		<Project filename="firmware/firmware.cbp" />
+		<Project filename="test/test.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
