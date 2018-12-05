@@ -28,6 +28,8 @@ THE SOFTWARE.
 #include "devices/LcdHd44780.h"
 #include "serialInterfaces/TwoWireInterface.h"
 #include "devices/Ds3231.h"
+#include "devices/keyboard/Keyboard.h"
+#include "devices/keyboard/KeyboardHALAVR.h"
 
 #include <util/delay.h>
 #include <stdio.h>
@@ -42,6 +44,10 @@ THE SOFTWARE.
 FIL sd_file;		// File objects
 FATFS sd_fatFs;		// File system object for logical drive
 char filename[] = "ee.txt";
+
+KeyboardHALAVR halAvr;
+Keyboard keyboard(&halAvr);
+volatile uint8_t keyCounter = 0;
 
 int main(void)
 {
@@ -70,6 +76,7 @@ int main(void)
 	UINT cnt;
 	while(1)
 	{
+		buffer[0] = '\0';
 		int errors = f_mount(&sd_fatFs, "", 1);
 		usart_printf("1: %d %d\r\n", errors, disk_status(0));
 		if (!errors)
@@ -107,6 +114,13 @@ int main(void)
 		
 		lcd.cursor(1,0);
 		lcd.print(time);
+		
+		sprintf(buffer, "%d",
+				keyCounter
+				);
+		lcd.cursor(1,9);
+		lcd.print(buffer);
+		
 //
 //		lcd.cursor(0,0);
 //		lcd.print(date);
@@ -121,5 +135,14 @@ int main(void)
 
 ISR(TIMER0_OVF_vect) {
 	disk_timerproc();
+	keyboard.onTimer();
+	if (keyboard.getQueue().front().getKey() != Key::None)
+	{
+		if (keyboard.getQueue().front().getState() == KeyState::Released)
+		{
+			++keyCounter;
+			keyboard.getQueue().pop();
+		}
+	}
 	PORTA ^= (1 << PA7); // for debug
 }
