@@ -94,6 +94,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="serialInterfaces/Usart.h" />
+		<Unit filename="system/cplusplusextensions.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
