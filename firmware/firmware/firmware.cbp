@@ -87,6 +87,18 @@
 		<Unit filename="fatFs/mmc_avr_spi.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="gui/HomeView.cpp" />
+		<Unit filename="gui/HomeView.h" />
+		<Unit filename="gui/MenuDefinitions.cpp" />
+		<Unit filename="gui/MenuDefinitions.h" />
+		<Unit filename="gui/MenuItem.cpp" />
+		<Unit filename="gui/MenuItem.h" />
+		<Unit filename="gui/MenuView.cpp" />
+		<Unit filename="gui/MenuView.h" />
+		<Unit filename="gui/View.cpp" />
+		<Unit filename="gui/View.h" />
+		<Unit filename="gui/ViewStack.cpp" />
+		<Unit filename="gui/ViewStack.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="serialInterfaces/TwoWireInterface.cpp" />
 		<Unit filename="serialInterfaces/TwoWireInterface.h" />

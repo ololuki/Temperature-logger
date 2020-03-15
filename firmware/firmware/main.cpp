@@ -31,6 +31,10 @@ THE SOFTWARE.
 #include "devices/keyboard/Keyboard.h"
 #include "devices/keyboard/KeyboardHALAVR.h"
 
+#include "gui/HomeView.h"
+#include "gui/MenuView.h"
+#include "gui/MenuDefinitions.h"
+
 #include <util/delay.h>
 #include <stdio.h>
 #include "fatFs/diskio.h"
@@ -47,7 +51,7 @@ char filename[] = "ee.txt";
 
 KeyboardHALAVR halAvr;
 Keyboard keyboard(&halAvr);
-volatile uint8_t keyCounter = 0;
+
 
 int main(void)
 {
@@ -74,6 +78,24 @@ int main(void)
 	buffer[0] = '\0';
 	memset(buffer, '\0', 10);
 	UINT cnt;
+
+	ViewStack gui;
+	HomeView* homeView = new HomeView(&gui);
+	gui.openView(homeView);
+
+	while(1)
+	{
+		gui.render();
+		_delay_ms(20);
+		if (keyboard.getQueue().front().getKey() != Key::None
+			 && keyboard.getQueue().front().getState() == KeyState::Released)
+		{
+			usart_printf("Key pressed\r\n");
+			gui.onButton(keyboard.getQueue().front());
+			keyboard.getQueue().pop();
+		}
+	}
+
 	while(1)
 	{
 		buffer[0] = '\0';
@@ -88,39 +110,6 @@ int main(void)
 		
 		lcd.cursor(0,0);
 		lcd.print(buffer);
-		
-		uint8_t dateTimeBuf[10];
-		Ds3231::readDateTime(dateTimeBuf, 10);
-		
-		char time[20];
-		sprintf(time, "%d%d:%d%d:%d%d",
-				(dateTimeBuf[2] >> 4) & 0x03,
-				dateTimeBuf[2] & 0x0F,
-				dateTimeBuf[1] >> 4,
-				dateTimeBuf[1] & 0x0F,
-				dateTimeBuf[0] >> 4,
-				dateTimeBuf[0] & 0x0F
-				);
-		
-		char date[20];
-		sprintf(date, "20%d%d-%d%d-%d%d",
-				dateTimeBuf[6] >> 4,
-				dateTimeBuf[6] & 0x0F,
-				(dateTimeBuf[5] >> 4) & 0x01,
-				dateTimeBuf[5] & 0x0F,
-				dateTimeBuf[4] >> 4,
-				dateTimeBuf[4] & 0x0F
-				);
-		
-		lcd.cursor(1,0);
-		lcd.print(time);
-		
-		sprintf(buffer, "%d",
-				keyCounter
-				);
-		lcd.cursor(1,9);
-		lcd.print(buffer);
-		
 //
 //		lcd.cursor(0,0);
 //		lcd.print(date);
@@ -136,13 +125,5 @@ int main(void)
 ISR(TIMER0_OVF_vect) {
 	disk_timerproc();
 	keyboard.onTimer();
-	if (keyboard.getQueue().front().getKey() != Key::None)
-	{
-		if (keyboard.getQueue().front().getState() == KeyState::Released)
-		{
-			++keyCounter;
-			keyboard.getQueue().pop();
-		}
-	}
 	PORTA ^= (1 << PA7); // for debug
 }
