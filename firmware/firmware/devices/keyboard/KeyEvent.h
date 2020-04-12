@@ -48,11 +48,11 @@ class KeyEvent
 public:
 	KeyEvent() {}
 	KeyEvent(Key key, KeyState state) : key(key), state(state) {}
-	Key getKey()
+	Key getKey() const
 	{
 		return key;
 	}
-	KeyState getState()
+	KeyState getState() const
 	{
 		return state;
 	}
