@@ -65,5 +65,5 @@ void HomeView::renderClock()
 			);
 	
 	lcd.cursor(1,0);
-	lcd.print(time);
+	lcd.print(date);
 }
