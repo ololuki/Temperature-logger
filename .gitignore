@@ -1,0 +1,7 @@
+firmware/firmware/bin
+firmware/firmware/obj
+firmware/test/bin
+firmware/test/obj
+*.save
+*.layout
+*.depend
