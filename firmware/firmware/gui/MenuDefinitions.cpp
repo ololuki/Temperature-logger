@@ -24,11 +24,12 @@ THE SOFTWARE.
 #include "gui/MenuView.h"
 #include "gui/ViewStack.h"
 
+#define openSubmenu(menuArray) [](ViewStack* gui){gui->openView(new MenuView(gui, menuArray, sizeof(menuArray)/sizeof(MenuItem)));}
 
 MenuItem mainMenuArray[] =
 {
 	{
-		"first", [](ViewStack* gui){gui->openView(new MenuView(gui, firstSubMenuArray, sizeof(firstSubMenuArray)/sizeof(MenuItem)));}
+		"first", openSubmenu(firstSubMenuArray)
 	},
 	{
 		"second", nullptr
@@ -37,7 +38,7 @@ MenuItem mainMenuArray[] =
 		"third", nullptr
 	},
 	{
-		"fourth", [](ViewStack* gui){gui->openView(new MenuView(gui, fourthSubMenuArray, sizeof(fourthSubMenuArray)/sizeof(MenuItem)));}
+		"fourth", openSubmenu(fourthSubMenuArray)
 	},
 	{
 		"fifth", nullptr
